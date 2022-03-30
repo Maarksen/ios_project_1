@@ -41,66 +41,82 @@ COMMAND="merge"			#variable to store command
 AFTER_DATE="0000-01-01"		#variable to store after what date we display logs
 BEFORE_DATE="9999-12-31"	#variable to store before what date we display logs
 GENDER="N"			#variable to store what gender do we display on the logs
-WIDTH=0			#variable that stores the width of histogram
+WIDTH=0				#variable that stores the width of histogram
 MAX=0
 FILTERED=""
 graph=false
 
-#parse_argumets(){		#function to parse the possible arguments
-	
-	while [ "$#" -gt 0 ]; do
-	       case "$1" in
-		infected | merge | gender | age | daily | monthly | yearly | countries | districts | regions)
-			COMMAND="$1"
+while [ "$#" -gt 0 ]; do
+       case "$1" in
+	infected | merge | gender | age | daily | monthly | yearly | countries | districts | regions)
+		COMMAND="$1"
+		shift
+		;;
+	-a)
+		AFTER_DATE="$2"
+		shift		
+		shift
+		;;
+	-b)
+		BEFORE_DATE="$2"
+		shift
+		shift
+		;;
+	-g)
+		GENDER="$2"
+		shift
+		shift
+		;;
+	-s)
+		if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+			graph=true
+			WIDTH=0
 			shift
-			;;
-	  	-a)
-			AFTER_DATE="$2"
-			shift		
-			shift
-			;;
-		-b)
-			BEFORE_DATE="$2"
+		else
+			graph=true
+			WIDTH="$2"
 			shift
 			shift
-			;;
-		-g)
-			GENDER="$2"
-			shift
-			shift
-			;;
-		-s)
-			if ! [[ "$2" =~ ^[0-9]+$ ]]; then
-				graph=true
-				WIDTH=0
-       				shift
-			else
-				graph=true
-				WIDTH="$2"
-				shift
-				shift
-			fi
-			;;
-		-h)
-			print_help
-			exit 0
-			shift
-			;;
-		 *)
-			 if [[ "$1" == *bz2 ]]; then
-				 FILE_BZ2="$1 $FILE_BZ2"
-			 elif [[ "$1" == *gz ]]; then 
-				FILE_GZ="$1 $FILE_GZ"
-			 else
-				FILE="$1 $FILE"
-			 fi
-			 shift
-			 ;;
+		fi
+		;;
+	-h)
+		print_help
+		exit 0
+		shift
+		;;
+	 *)
+		 if [[ "$1" == *.bz2 ]]; then
+			 BZ2_FILE="$1 $BZ2_FILE"
+		 elif [[ "$1" == *.gz ]]; then 
+			 GZ_FILE="$1 $GZ_FILE"
+		 else
+			 FILE="$1 $FILE"
+		 fi
+		 shift
+		 ;;
 	esac
 done
-#}
 
-LIST=$(cat $FILE)
+if [[ $BZ2_FILE != "" ]]; then
+	BZ2_LIST=$(bzip2 -d -c -k $BZ2_FILE)
+fi
+
+if [[ $GZ_FILE != "" ]]; then
+	GZ_LIST=$(gzip -d -c -k $GZ_FILE)
+fi
+
+if [[ $FILE != "" ]]; then
+	STANDARD_LIST=$(cat $FILE)
+fi
+
+if [ "$BZ2_FILE" == "" ] && [ "$GZ_FILE" == "" ] && [ "$STANDARD_FILE" == "" ]; then
+	LIST=$(cat)
+else
+	LIST=$(echo "$STANDARD_FILE
+			$BZ2_LIST
+		       	$GZ_LIST")
+fi
+
 
 FILTERED=$(echo "$LIST" | awk -F "," \
     -v BEFORE_DATE="$BEFORE_DATE" -v AFTER_DATE="$AFTER_DATE" -v GENDER="$GENDER" \
