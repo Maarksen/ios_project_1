@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export LC_NUMERIC=en_US.UTF-8
 export POSIXLY_CORRECT=yes
@@ -85,37 +85,19 @@ while [ "$#" -gt 0 ]; do
 		shift
 		;;
 	 *)
-		 if [[ "$1" == *.bz2 ]]; then
-			 BZ2_FILE="$1 $BZ2_FILE"
-		 elif [[ "$1" == *.gz ]]; then 
-			 GZ_FILE="$1 $GZ_FILE"
-		 else
-			 FILE="$1 $FILE"
-		 fi
-		 shift
-		 ;;
+		 if [[ "$1" == *.gz ]]; then
+            		LIST="$(gzip -c -k -d $1) $LIST"
+            		shift
+        	elif [[ "$1" == *.bz2 ]]; then  
+           		READ_FILES="$(bzip2 -c -k -d $1) $LIST"
+            		shift
+        	else 
+            		READ_FILES="$(cat $1) $LIST"
+            		shift
+		fi
+		;;
 	esac
 done
-
-if [[ $BZ2_FILE != "" ]]; then
-	BZ2_LIST=$(bzip2 -d -c -k $BZ2_FILE)
-fi
-
-if [[ $GZ_FILE != "" ]]; then
-	GZ_LIST=$(gzip -d -c -k $GZ_FILE)
-fi
-
-if [[ $FILE != "" ]]; then
-	STANDARD_LIST=$(cat $FILE)
-fi
-
-if [ "$BZ2_FILE" == "" ] && [ "$GZ_FILE" == "" ] && [ "$STANDARD_FILE" == "" ]; then
-	LIST=$(cat)
-else
-	LIST=$(echo "$STANDARD_FILE
-			$BZ2_LIST
-		       	$GZ_LIST")
-fi
 
 
 FILTERED=$(echo "$LIST" | awk -F "," \
