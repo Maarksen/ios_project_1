@@ -89,10 +89,10 @@ while [ "$#" -gt 0 ]; do
             		LIST="$(gzip -c -k -d $1) $LIST"
             		shift
         	elif [[ "$1" == *.bz2 ]]; then  
-           		READ_FILES="$(bzip2 -c -k -d $1) $LIST"
+           		LIST="$(bzip2 -c -k -d $1) $LIST"
             		shift
         	else 
-            		READ_FILES="$(cat $1) $LIST"
+            		LIST="$(cat $1) $LIST"
             		shift
 		fi
 		;;
