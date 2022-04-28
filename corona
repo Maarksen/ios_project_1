@@ -85,11 +85,11 @@ while [ "$#" -gt 0 ]; do
 		shift
 		;;
 	 *)
-		 if [[ "$1" == *.gz ]]; then
-            		LIST="$(gzip -c -k -d $1) $LIST"
+		 if [[ "$1" == *.bz2 ]]; then
+            		LIST="$(bzip2 -c -k -d $1) $LIST"
             		shift
-        	elif [[ "$1" == *.bz2 ]]; then  
-           		LIST="$(bzip2 -c -k -d $1) $LIST"
+        	elif [[ "$1" == *.gz ]]; then  
+           		LIST="$(gzip -c -k -d $1) $LIST"
             		shift
         	else 
             		LIST="$(cat $1) $LIST"
@@ -564,7 +564,7 @@ if [[ $COMMAND == "districts" ]]; then
 		}
 		if (WIDTH == 0){
 			for(i in a){
-				if (i == "") printf("NONE: ")
+				if (i == "") printf("None: ")
 				printf("%s: ", i)
 				for (j = 0; j < int(a[i] / 1000); j++){
 					printf("#")
@@ -574,7 +574,7 @@ if [[ $COMMAND == "districts" ]]; then
 		}
 		else{
 			for(i in a){
-				if (i == "") printf("NONE: ")
+				if (i == "") printf("None: ")
 				printf("%s: ", i)
 				for (j = 0; j < int((WIDTH/MAX) * a[i]); j++){
 					printf("#")
@@ -601,7 +601,7 @@ if [[ $COMMAND == "regions" ]]; then
 		}
 		if (WIDTH == 0){
 			for(i in a){
-				if (i == "") printf("NONE: ")
+				if (i == "") printf("None: ")
 				printf("%s: ", i)
 				for (j = 0; j < int(a[i] / 10000); j++){
 					printf("#")
@@ -611,7 +611,7 @@ if [[ $COMMAND == "regions" ]]; then
 		}
 		else{
 			for(i in a){
-				if (i == "") printf("NONE: ")
+				if (i == "") printf("None: ")
 				printf("%s: ", i)
 				for (j = 0; j < int((WIDTH/MAX) * a[i]); j++){
 					printf("#")
