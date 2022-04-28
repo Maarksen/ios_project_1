@@ -553,7 +553,7 @@ fi
 if [[ $COMMAND == "districts" ]]; then
 	if [[ $graph == "false" ]]; then
 		output=$(echo "$FILTERED" | awk -F "," '{a[$6]+=1} END{for (i in a){
-		if (i == "") print "NONE: "a[i]; else print i": "a[i];}}' | sort)
+		if (i == "") print "None: "a[i]; else print i": "a[i];}}' | sort)
 		echo "$output"
 	else
 		output=$(echo "$FILTERED" | awk -F "," -v WIDTH="$WIDTH" -v MAX="$MAX" '{a[$6]+=1} END{
@@ -590,7 +590,7 @@ fi
 if [[ $COMMAND == "regions" ]]; then
 	if [[ $graph == "false" ]]; then
 		output=$(echo "$FILTERED" | awk -F "," '{a[$5]+=1} END{for (i in a){
-		if (i == "") print "NONE: "a[i]; else print i": "a[i];}}' | sort)
+		if (i == "") print "None: "a[i]; else print i": "a[i];}}' | sort)
 		echo "$output"
 	else
 		output=$(echo "$FILTERED" | awk -F "," -v WIDTH="$WIDTH" -v MAX="$MAX" '{a[$5]+=1} END{
